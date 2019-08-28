@@ -3,18 +3,36 @@ package search
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 func Analysis(content string) {
 
 	//正则匹配 css/js标签并去除
 	//fmt.Println(content)
-	re := regexp.MustCompile(`<title>*</title>`)
+/*	re := regexp.MustCompile(`<title>*</title>`)
 	matched := re.FindAllStringSubmatch(content, -1)
-	fmt.Println(matched)
-/*	for _, match := range matched {
-		fmt.Printf("email is: %s, domain is: %s\n", match[0], match[1])
-	}*/
+	fmt.Println(matched)*/
 
+	fmt.Println(trimHtml(content))
 
+}
+
+func trimHtml(src string) string {
+	//将HTML标签全转换成小写
+	re, _ := regexp.Compile("\\<[\\S\\s]+?\\>")
+	src = re.ReplaceAllStringFunc(src, strings.ToLower)
+	//去除STYLE
+	re, _ = regexp.Compile("\\<style[\\S\\s]+?\\</style\\>")
+	src = re.ReplaceAllString(src, "")
+	//去除SCRIPT
+	re, _ = regexp.Compile("\\<script[\\S\\s]+?\\</script\\>")
+	src = re.ReplaceAllString(src, "")
+	//去除所有尖括号内的HTML代码，并换成换行符
+	re, _ = regexp.Compile("\\<[\\S\\s]+?\\>")
+	src = re.ReplaceAllString(src, "\n")
+	//去除连续的换行符
+	re, _ = regexp.Compile("\\s{2,}")
+	src = re.ReplaceAllString(src, "\n")
+	return strings.TrimSpace(src)
 }

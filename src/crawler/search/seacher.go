@@ -10,7 +10,6 @@ func FetchByUrl(url string) string  {
 
 	//resp, err := http.Get("http://api.goseek.cn/")
 	resp, err := http.Get(url)
-
 	if err != nil {
 		log.Fatal(err)
 	}
